@@ -1,0 +1,98 @@
+<md-toolbar flex>
+  <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+    <md-button class="md-icon-button" aria-label="Menu" ng-click="main.toggle()">
+      <md-icon>menu</md-icon>
+    </md-button>
+    <p>{{ main.title }}</p>
+    <div style="width: 40px; height: 40px;"></div>
+  </div>
+</md-toolbar>
+
+<md-sidenav class="md-sidenav-left" md-component-id="left">
+  <md-toolbar>
+    <h1 class="md-toolbar-tools">SideNav Menu</h1>
+  </md-toolbar>
+  <md-list ng-cloak>
+    <md-list-item ng-href="http://www.google.com/design/spec/material-design/introduction.html">
+      <md-icon style="padding-right: 16px; color: #000000">school</md-icon>
+      <p>Material Design</p>
+    </md-list-item>
+    <md-list-item ng-href="https://material.angularjs.org/latest/">
+      <md-icon style="padding-right: 16px; color: #000000">settings_ethernet</md-icon>
+      <p>Angular Material</p>
+    </md-list-item>
+  </md-list>
+</md-sidenav>
+
+<div layout="column" layout-align="center center" flex>
+  <md-whiteframe class="md-whiteframe-3dp" layout="column" style="margin: 1em; width: 22em; height: 15em;" flex>
+    <div layout="column" flex style="margin-left: 1em;">
+       <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.takePicture()">
+        <md-icon>camera</md-icon>
+      </md-button>
+    </div>
+       <md-content class="md-padding" layout-xs="column" layout="row">
+      <md-card>
+          <img ng-src="{{ cropImage }}" class="md-card-image" alt="image caption">
+     
+          
+     </md-card>  
+             <md-content class="md-padding" layout-xs="column" layout="row">
+           <md-card>
+      
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Recognized</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <p>{{recognizedText}}
+            </p>
+               </md-card-content>
+           </md-card>
+           </md-content>
+            <md-content class="md-padding" layout-xs="column" layout="row"> 
+            <md-card>
+      
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">English </span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <p>{{englishText}}
+            </p>
+               </md-card-content>
+           </md-card>
+                 </md-content>
+             <md-content class="md-padding" layout-xs="column" layout="row">
+            <md-card>
+      
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Transliterated</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <p>{{transliteratedText}}
+            </p>
+               </md-card-content>
+           </md-card>
+           
+      </md-content>
+   
+  <!--  <md-divider></md-divider>
+    <div layout="row" layout-align="space-around center" flex="20">
+      <md-button class="md-icon-button" aria-label="Project" ng-href="https://github.com/mario-aleo/cordova-angular-angularMaterial-seed">
+        <md-icon style="color: #000000">camera</md-icon>
+      </md-button>
+      <md-button class="md-icon-button" aria-label="Creator" ng-href="https://github.com/mario-aleo">
+        <md-icon style="color: #000000">favorite</md-icon>
+      </md-button>
+    </div>
+  </md-whiteframe>
+
+  <md-button class="md-fab md-primary" aria-label="Menu">
+    <md-icon>menu</md-icon>
+  </md-button>-->
+</div>
