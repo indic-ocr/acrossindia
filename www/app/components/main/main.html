@@ -61,6 +61,10 @@
         <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.takePicture()">
             <md-icon>camera</md-icon>
         </md-button>
+        
+          <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.retryPicture()">
+            <md-icon>autorenew</md-icon>
+        </md-button>
 
     </section>
 </md-content>
@@ -72,7 +76,7 @@
     </section>
 
 </md-content>
-<md-content>
+<md-content ng-show="!fetch">
     <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
         <p>{{recognizedText}}
         </p>

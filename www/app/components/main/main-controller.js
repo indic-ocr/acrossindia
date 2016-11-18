@@ -70,10 +70,15 @@ angular.module("ngapp").controller("MainController", function(shared, $state, $s
 
         });
     }
+    
+    this.retryPicture = function(){
+        //alert("in here");
+        $scope.onPhotoSuccess($scope.cropImage);
+    }
 
     $scope.onPhotoSuccess = function(croppedURI){
         var options = new FileUploadOptions();
-        alert($scope.sourcelang + " " + $scope.targetlang + " " + $scope.codes[$scope.sourcelang] + " " + $scope.codes[$scope.targetlang]);
+       
         $cookies.put("sourcelang", $scope.sourcelang); 
         $cookies.put("targetlang", $scope.targetlang);
         $cookies.put("serveraddress",$scope.serveraddress);
