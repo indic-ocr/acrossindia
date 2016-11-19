@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("ngapp").controller("MainController", function(shared, $state, $scope, $mdSidenav, $mdComponentRegistry,$cookies){
+angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $scope, $mdSidenav, $mdComponentRegistry,$cookies){
 
     var ctrl = this;
 
@@ -70,13 +70,14 @@ angular.module("ngapp").controller("MainController", function(shared, $state, $s
 
         });
     }
-    
-    this.retryPicture = function(){
-        //alert("in here");
-        $scope.onPhotoSuccess($scope.cropImage);
-    }
 
-    $scope.onPhotoSuccess = function(croppedURI){
+    $scope.retryPicture = function(){
+     
+        $scope.showPic = true;
+        $scope.fetch=true;
+        $scope.recognizedText ="";
+        $scope.englishText="";
+        $scope.transliteratedText="";
         var options = new FileUploadOptions();
        
         $cookies.put("sourcelang", $scope.sourcelang); 
@@ -94,30 +95,22 @@ angular.module("ngapp").controller("MainController", function(shared, $state, $s
         options.chunkedMode = false;
 
         var ft = new FileTransfer();
-        ft.upload(croppedURI, "http://"+$scope.serveraddress+"/india", function(result){
+       
+        ft.upload($scope.cropImage, "http://"+$scope.serveraddress+"/india", function(result){
             $scope.updateResult(result.response);
         }, function(error){
             alert(JSON.stringify(error));
         }, options);
-        $scope.$apply(function(){
-            $scope.cropImage= croppedURI;
 
+    }
 
-            $scope.showPic = true;
-            $scope.fetch=true;
-            $scope.recognizedText ="";
-            $scope.englishText="";
-            $scope.transliteratedText="";
+    $scope.onPhotoSuccess = function(croppedURI){
 
-        });
-
-        // $scope.cropSuccess(photoUri);
-        //  alert(photoUri);
-        //plugins.crop($scope.cropSuccess, function fail(message){ alert(message);}, photoUri);
+        plugins.crop($scope.cropSuccess, function fail(message){ alert(message);}, croppedURI);
     }
     this.onFail = function(message){
 
-        alert(message);
+
     }
 
     $scope.updateResult = function(response){
@@ -132,37 +125,41 @@ angular.module("ngapp").controller("MainController", function(shared, $state, $s
     }
 
     $scope.cropSuccess= function(croppedURI){
+
         $scope.$apply(function(){
             $scope.cropImage= croppedURI;
-            alert(croppedURI);
-            var options = new FileUploadOptions();
-            options.fileKey = "myfile";
-            options.fileName = "image.jpg";
-            options.mimeType = "image/jpeg";
-            console.log(options.fileName);
-            var params = new Object();
-            params.sourcelang = "tam";
-            params.tolang="hin"       
+            $scope.showPic = true;
+            $scope.fetch=true;
+            $scope.recognizedText ="";
+            $scope.englishText="";
+            $scope.transliteratedText="";
 
-            options.params = params;
-            options.chunkedMode = false;
-
-            var ft = new FileTransfer();
-            ft.upload(croppedURI, "http://192.168.1.6:8081/india", function(result){
-
-                $scope.$apply(function(){
-
-                    var response = result.response;
-
-                    $scope.recognizedText = response.recognizedText;
-                    $scope.englishText= respose.englishTransliteration;
-                    $scope.transliteratedText=response.tranliteratedTo;
-                });
-
-            }, function(error){
-                alert(JSON.stringify(error));
-            }, options);
         });
+        var options = new FileUploadOptions();
+
+
+
+        $cookies.put("sourcelang", $scope.sourcelang); 
+        $cookies.put("targetlang", $scope.targetlang);
+        $cookies.put("serveraddress",$scope.serveraddress);
+        options.fileKey = "myfile";
+        options.fileName = "image.jpg";
+        options.mimeType = "image/jpeg";
+
+        var params = new Object();
+        params.sourcelang = $scope.codes[$scope.sourcelang];
+        params.tolang=$scope.codes[$scope.targetlang];       
+
+        options.params = params;
+        options.chunkedMode = false;
+
+        var ft = new FileTransfer();
+
+        ft.upload(croppedURI, "http://"+$scope.serveraddress+"/india", function(result){
+            $scope.updateResult(result.response);
+        }, function(error){
+            alert(JSON.stringify(error));
+        }, options);
 
 
     }

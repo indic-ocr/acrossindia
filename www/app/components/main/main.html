@@ -62,7 +62,7 @@
             <md-icon>camera</md-icon>
         </md-button>
         
-          <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.retryPicture()">
+<md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="retryPicture()">
             <md-icon>autorenew</md-icon>
         </md-button>
 
@@ -77,23 +77,25 @@
 
 </md-content>
 <md-content ng-show="!fetch">
-    <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-        <p>{{recognizedText}}
-        </p>
-
-
-
-        <p>{{englishText}}
-        </p>
-
-        <p>{{transliteratedText}}
-        </p>
-    </section>
+   
     <md-card ng-show="showPic">
         <img ng-src="{{cropImage}}" class="md-card-image" alt="Clicked Pic">
 
     </md-card>
+ <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        <p> {{recognizedText}}
+        </p>
 
+    </section>
+         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+
+        <p>{{englishText}}
+        </p>
+     </section>
+ <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        <p>{{transliteratedText}}
+        </p>
+    </section>
 </md-content>
 
 <!--    <md-content class="md-padding" layout-xs="column" layout="row">
