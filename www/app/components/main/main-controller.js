@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $scope, $mdSidenav, $mdComponentRegistry,$cookies){
+angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $http,$scope, $mdSidenav, $mdComponentRegistry,$cookies){
 
     var ctrl = this;
 
@@ -27,10 +27,11 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     else
         $scope.serveraddress =$cookies.get("serveraddress");
     $scope.showPic = false;
+    $scope.showInvert= false;
 
     $scope.codes={"Bengali":"ben",
                   "English":"eng",
-                  Gujarati:"guj",
+                  "Gujarati":"guj",
                   "Hindi":"hin",
                   "Kannada":"kan",
                   "Malayalam":"mal",
@@ -43,6 +44,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     this.cropImage= "";
     $scope.fetch = false;
 
+    $scope.filePath= "";
 
     $scope.recognizedText="";
     $scope.englishText="";
@@ -71,38 +73,47 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         });
     }
 
-    $scope.retryPicture = function(){
-     
+    $scope.sendRetry = function(operation){
+
+        if(!$scope.filePath)
+            return;
         $scope.showPic = true;
         $scope.fetch=true;
         $scope.recognizedText ="";
         $scope.englishText="";
         $scope.transliteratedText="";
-        var options = new FileUploadOptions();
-       
+        var config ={};
+        var data = {};
         $cookies.put("sourcelang", $scope.sourcelang); 
         $cookies.put("targetlang", $scope.targetlang);
         $cookies.put("serveraddress",$scope.serveraddress);
-        options.fileKey = "myfile";
-        options.fileName = "image.jpg";
-        options.mimeType = "image/jpeg";
+        data.sourcelang = $scope.codes[$scope.sourcelang];
+        data.tolang=$scope.codes[$scope.targetlang];   
+        data.operation = operation;
+        data.filePath = $scope.filePath;
 
-        var params = new Object();
-        params.sourcelang = $scope.codes[$scope.sourcelang];
-        params.tolang=$scope.codes[$scope.targetlang];       
+        $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
+            .success(function (data, status, headers, config) {
 
-        options.params = params;
-        options.chunkedMode = false;
+            console.log(JSON.stringify(data));
+            $scope.fetch=false;
 
-        var ft = new FileTransfer();
-       
-        ft.upload($scope.cropImage, "http://"+$scope.serveraddress+"/india", function(result){
-            $scope.updateResult(result.response);
-        }, function(error){
-            alert(JSON.stringify(error));
-        }, options);
+            $scope.recognizedText = data.recognizedText;
+            $scope.englishText= data.englishTransliteration;
+            $scope.transliteratedText=data.tranliteratedTo;
 
+
+        })
+            .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
     }
+
+
+
 
     $scope.onPhotoSuccess = function(croppedURI){
 
@@ -115,12 +126,13 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     $scope.updateResult = function(response){
         $scope.$apply(function(){
-            //    alert(JSON.stringify(response));
+            alert(response);
             $scope.fetch=false;
             var response1 = JSON.parse(response)
             $scope.recognizedText = response1.recognizedText;
             $scope.englishText= response1.englishTransliteration;
             $scope.transliteratedText=response1.tranliteratedTo;
+            $scope.filePath = response1.filePath;
         });
     }
 

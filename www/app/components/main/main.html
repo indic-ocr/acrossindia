@@ -62,8 +62,12 @@
             <md-icon>camera</md-icon>
         </md-button>
         
-<md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="retryPicture()">
+<md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="sendRetry('normal')">
             <md-icon>autorenew</md-icon>
+        </md-button>
+        
+        <md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Retry" ng-click="sendRetry('invert')">
+            <md-icon>invert_colors</md-icon>
         </md-button>
 
     </section>
@@ -79,9 +83,16 @@
 <md-content ng-show="!fetch">
    
     <md-card ng-show="showPic">
-        <img ng-src="{{cropImage}}" class="md-card-image" alt="Clicked Pic">
+        <img id="sourceimage" ng-src="{{cropImage}}" class="md-card-image" alt="Clicked Pic">
 
     </md-card>
+    
+    <md-card ng-show="showInvert">
+        <img id="invertimage" ng-src="{{cropImage}}" class="md-card-image" alt="Clicked Pic">
+
+    </md-card>
+    
+    
  <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
         <p> {{recognizedText}}
         </p>
