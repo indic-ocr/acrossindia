@@ -11,6 +11,10 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     this.title = $state.current.title;
 
     this.languages= ["Bengali","English","Gujarati","Hindi","Kannada","Malayalam","Oriya","Punjabi","Tamil","Telugu"];
+    
+    this.engines =["tesseract","scribo"];
+    
+    $scope.targetengine = "tesseract";
 
     if(!$cookies.get("sourcelang"))
         $scope.sourcelang= "English";
@@ -91,6 +95,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         data.tolang=$scope.codes[$scope.targetlang];   
         data.operation = operation;
         data.filePath = $scope.filePath;
+        data.engine=$scope.targetengine;
 
         $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
             .success(function (data, status, headers, config) {

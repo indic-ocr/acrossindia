@@ -31,7 +31,7 @@
 <md-content>
     <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
         <md-input-container>
-            <label>Source language</label>
+            <label>Source</label>
             <md-select ng-model="sourcelang">
 
                 <md-option ng-repeat="language in main.languages" ng-value="language" >
@@ -43,11 +43,22 @@
 
 
         <md-input-container>
-            <label>Target language</label>
+            <label>Target</label>
             <md-select ng-model="targetlang">
 
                 <md-option ng-repeat="language in main.languages" ng-value="language" >
                     {{language}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        
+        
+         <md-input-container>
+            <label>Engine</label>
+            <md-select ng-model="targetengine">
+
+                <md-option ng-repeat="engine in main.engines" ng-value="engine" >
+                    {{engine}}
                 </md-option>
             </md-select>
         </md-input-container>
@@ -66,10 +77,13 @@
             <md-icon>autorenew</md-icon>
         </md-button>
         
-        <md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Retry" ng-click="sendRetry('invert')">
+        <md-button id="invertButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Invert" ng-click="sendRetry('invert')">
             <md-icon>invert_colors</md-icon>
         </md-button>
 
+         <md-button id="binarizeButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Binarize" ng-click="sendRetry('binarize')">
+            <md-icon>filter_b_and_w</md-icon>
+        </md-button>
     </section>
 </md-content>
 
