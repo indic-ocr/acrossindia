@@ -131,7 +131,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     $scope.updateResult = function(response){
         $scope.$apply(function(){
-            alert(response);
+          
             $scope.fetch=false;
             var response1 = JSON.parse(response)
             $scope.recognizedText = response1.recognizedText;
