@@ -11,10 +11,17 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     this.title = $state.current.title;
 
     this.languages= ["Bengali","English","Gujarati","Hindi","Kannada","Malayalam","Oriya","Punjabi","Tamil","Telugu"];
-    
+
     this.engines =["tesseract","scribo"];
-    
+
     $scope.targetengine = "tesseract";
+
+    $scope.results = [];
+
+    $scope.ocrengines = ["tesseract","scribo"];
+    $scope.ocrops = ["normal","invert","binarize"];
+    $scope.ocrenginecount = -1;
+    $scope.opscount = -1;
 
     if(!$cookies.get("sourcelang"))
         $scope.sourcelang= "English";
@@ -77,6 +84,63 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         });
     }
 
+
+
+    $scope.getStrings = function(){
+        $scope.opscount++;
+
+        if($scope.ocrenginecount == -1 || $scope.opscount >= $scope.ocrops.length){
+            $scope.ocrenginecount++;
+            $scope.opscount = 0;
+        }
+
+
+        if($scope.ocrenginecount >= $scope.ocrengines.length)
+            return;
+
+
+
+
+
+        if(!$scope.filePath)
+            return;
+        $scope.showPic = true;
+        $scope.fetch=true;
+        $scope.recognizedText ="";
+        $scope.englishText="";
+        $scope.transliteratedText="";
+        var config ={};
+        var data = {};
+        $cookies.put("sourcelang", $scope.sourcelang); 
+        $cookies.put("targetlang", $scope.targetlang);
+        $cookies.put("serveraddress",$scope.serveraddress);
+        data.sourcelang = $scope.codes[$scope.sourcelang];
+        data.tolang=$scope.codes[$scope.targetlang];   
+        data.operation =$scope.ocrops[$scope.opscount];
+        data.filePath = $scope.filePath;
+        data.engine=$scope.ocrengines[$scope.ocrenginecount];
+
+        $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
+            .success(function (data, status, headers, config) {
+
+
+            $scope.results.push(data);
+
+            console.log(JSON.stringify($scope.results));
+
+           $scope.getStrings();
+
+
+        })
+            .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+            callback($scope.ResponseDetails,"NotDone");
+        });
+    }
+
     $scope.sendRetry = function(operation){
 
         if(!$scope.filePath)
@@ -129,16 +193,27 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     }
 
+
+
+
     $scope.updateResult = function(response){
         $scope.$apply(function(){
-          
+
             $scope.fetch=false;
             var response1 = JSON.parse(response)
             $scope.recognizedText = response1.recognizedText;
             $scope.englishText= response1.englishTransliteration;
             $scope.transliteratedText=response1.tranliteratedTo;
             $scope.filePath = response1.filePath;
+
+            $scope.ocrenginecount = -1;
+            $scope.opscount = -1;
+
+            $scope.getStrings();
+           
+
         });
+
     }
 
     $scope.cropSuccess= function(croppedURI){
