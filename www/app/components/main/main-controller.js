@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $http,$scope, $mdSidenav, $mdComponentRegistry,$cookies){
+angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $http,$scope, $mdSidenav, $mdComponentRegistry,$cookies, $sce){
 
     var ctrl = this;
 
@@ -127,7 +127,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         $mdDialog.show(
             $mdDialog.alert()
             .title($scope.results[index].recognizedText)
-            .textContent(  $scope.results[index].tranliteratedTo )
+            .htmlContent($sce.trustAsHtml( "<p class=\"md-headline\">"+ $scope.results[index].englishTransliteration + "</p> <p class=\"md-headline\">" + $scope.results[index].tranliteratedTo +"</p>"))
             .ariaLabel($scope.results[index].recognizedText)
             .ok('OK')
 
