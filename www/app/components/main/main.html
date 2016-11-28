@@ -59,15 +59,7 @@
             </md-input-container>
 
 
-            <md-input-container>
-                <label>Engine</label>
-                <md-select ng-model="targetengine">
-
-                    <md-option ng-repeat="engine in main.engines" ng-value="engine" >
-                        {{engine}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
+            
         </section>
 
 
@@ -83,13 +75,7 @@
                 <md-icon>autorenew</md-icon>
             </md-button>
 
-            <md-button id="invertButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Invert" ng-click="sendRetry('invert')">
-                <md-icon>invert_colors</md-icon>
-            </md-button>
-
-            <md-button id="binarizeButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Binarize" ng-click="sendRetry('binarize')">
-                <md-icon>filter_b_and_w</md-icon>
-            </md-button>
+           
         </section>
     </md-content>
 
@@ -116,6 +102,7 @@
 
                 <p class="md-headline">{{ data.recognizedText }}</p>
 
+                <md-divider></md-divider>
 
             </md-list-item>    
 

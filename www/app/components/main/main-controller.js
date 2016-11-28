@@ -89,42 +89,36 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     $scope.sendRetry = function(operation){
 
-        if(!$scope.filePath)
-            return;
+
         $scope.showPic = true;
         $scope.fetch=true;
         $scope.recognizedText ="";
         $scope.englishText="";
         $scope.transliteratedText="";
-        var config ={};
-        var data = {};
         $cookies.put("sourcelang", $scope.sourcelang); 
         $cookies.put("targetlang", $scope.targetlang);
         $cookies.put("serveraddress",$scope.serveraddress);
-        data.sourcelang = $scope.codes[$scope.sourcelang];
-        data.tolang=$scope.codes[$scope.targetlang];   
-        data.operation = operation;
-        data.filePath = $scope.filePath;
-        data.engine=$scope.targetengine;
+        var options = new FileUploadOptions();
+        options.fileKey = "myfile";
+        options.fileName = "image.jpg";
+        options.mimeType = "image/jpeg";
 
-        $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
-            .success(function (data, status, headers, config) {
+        var params = new Object();
+        params.sourcelang = $scope.codes[$scope.sourcelang];
+        params.tolang=$scope.codes[$scope.targetlang];       
 
-            console.log(JSON.stringify(data));
-            $scope.fetch=false;
+        options.params = params;
+        options.chunkedMode = false;
 
-            $scope.recognizedText = data.recognizedText;
-            $scope.englishText= data.englishTransliteration;
-            $scope.transliteratedText=data.tranliteratedTo;
+        var ft = new FileTransfer();
 
-
-        })
-            .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
+        ft.upload( $scope.cropImage, "http://"+$scope.serveraddress+"/india", function(result){
+            $scope.updateResult(result.response);
+        }, function(error){
+            alert("Could not contact the service!!");
+            console.log(JSON.stringify(error));
+            $scope.fetch = false;
+        }, options);
     }
 
 
@@ -132,10 +126,10 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
         $mdDialog.show(
             $mdDialog.alert()
-            .title(index)
-            .textContent(index)
-            .ariaLabel('Secondary click demo')
-            .ok('Neat!')
+            .title($scope.results[index].recognizedText)
+            .textContent(  $scope.results[index].tranliteratedTo )
+            .ariaLabel($scope.results[index].recognizedText)
+            .ok('OK')
 
         );
 
@@ -159,15 +153,11 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
             $scope.ocrenginecount++;
             $scope.opscount = 0;
         }
-
-
         if($scope.ocrenginecount >= $scope.ocrengines.length)
+        {
+            $scope.fetch=false;
             return;
-
-
-
-
-
+        }
         if(!$scope.filePath)
             return;
         $scope.showPic = true;
@@ -220,6 +210,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
             $scope.ocrenginecount = -1;
             $scope.opscount = -1;
+            $scope.results = [];
 
             $scope.getStrings();
 
@@ -262,7 +253,9 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         ft.upload(croppedURI, "http://"+$scope.serveraddress+"/india", function(result){
             $scope.updateResult(result.response);
         }, function(error){
-            alert(JSON.stringify(error));
+            alert("Could not contact the service!!");
+            console.log(JSON.stringify(error));
+            $scope.fetch = false;
         }, options);
 
 
