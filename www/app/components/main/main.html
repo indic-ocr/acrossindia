@@ -1,6 +1,6 @@
 <div layout="column" >
 
-    <md-content flex="none" style="height: 20%;" >   
+    <md-content flex="20"  >   
         <md-toolbar flex="none">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
                 <md-button class="md-icon-button" aria-label="Menu" ng-click="main.toggle()">
@@ -11,30 +11,30 @@
             </div>
         </md-toolbar>
 
-       
+
     </md-content> 
 
-     <md-sidenav class="md-sidenav-left" md-component-id="left">
-            <md-toolbar>
-                <h1 class="md-toolbar-tools">Set Server</h1>
-            </md-toolbar>
-            <md-content>
+    <md-sidenav class="md-sidenav-left" md-component-id="left">
+        <md-toolbar>
+            <h1 class="md-toolbar-tools">Set Server</h1>
+        </md-toolbar>
+        <md-content>
 
-                <md-input-container>
-                    <label>Server Address</label>
+            <md-input-container>
+                <label>Server Address</label>
 
-                    <input ng-model="serveraddress">
-                </md-input-container>
-
-
+                <input ng-model="serveraddress">
+            </md-input-container>
 
 
 
-            </md-content>
-        </md-sidenav>
+
+
+        </md-content>
+    </md-sidenav>
     <md-divider></md-divider>
 
-    <md-content flex="none" style="height: 10%;">
+    <md-content flex="10">
         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
             <md-input-container>
                 <label>Source</label>
@@ -72,7 +72,7 @@
 
 
     </md-content>
-    <md-content flex="none" style="height: 10%;">
+    <md-content flex="10">
 
         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
             <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.takePicture()">
@@ -100,30 +100,40 @@
         </section>
 
     </md-content>
-    <md-content ng-show="!fetch" flex="none" style="height: 30%; overflow: scroll">
+    <md-content ng-show="!fetch" flex="30" style="overflow: scroll">
 
         <md-card ng-show="showPic">
             <img id="sourceimage" ng-src="{{cropImage}}" class="md-card-image" alt="Clicked Pic">
 
         </md-card>
-  
+
     </md-content>   
 
-    <md-content flex="none" style="height: 30%; overflow: scroll">
-        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-            <p class="md-headline"> {{recognizedText}}
-            </p>
+    <md-content flex="30" style="overflow: scroll">
 
-        </section>
-        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        <md-list>
+            <md-list-item ng-repeat="data in results" ng-click="showTransliteration($index)" class="noright">
 
-            <p class="md-headline">{{englishText}}
-            </p>
-        </section>
-        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-            <p class="md-headline">{{transliteratedText}}
-            </p>
-        </section>
+                <p class="md-headline">{{ data.recognizedText }}</p>
+
+
+            </md-list-item>    
+
+        </md-list>
+        <!--   <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+<p class="md-headline"> {{recognizedText}}
+</p>
+
+</section>
+<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+
+<p class="md-headline">{{englishText}}
+</p>
+</section>
+<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+<p class="md-headline">{{transliteratedText}}
+</p>
+</section>-->
     </md-content>
 </div>    
 

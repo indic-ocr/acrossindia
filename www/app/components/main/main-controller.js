@@ -86,60 +86,6 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
 
 
-    $scope.getStrings = function(){
-        $scope.opscount++;
-
-        if($scope.ocrenginecount == -1 || $scope.opscount >= $scope.ocrops.length){
-            $scope.ocrenginecount++;
-            $scope.opscount = 0;
-        }
-
-
-        if($scope.ocrenginecount >= $scope.ocrengines.length)
-            return;
-
-
-
-
-
-        if(!$scope.filePath)
-            return;
-        $scope.showPic = true;
-        $scope.fetch=true;
-        $scope.recognizedText ="";
-        $scope.englishText="";
-        $scope.transliteratedText="";
-        var config ={};
-        var data = {};
-        $cookies.put("sourcelang", $scope.sourcelang); 
-        $cookies.put("targetlang", $scope.targetlang);
-        $cookies.put("serveraddress",$scope.serveraddress);
-        data.sourcelang = $scope.codes[$scope.sourcelang];
-        data.tolang=$scope.codes[$scope.targetlang];   
-        data.operation =$scope.ocrops[$scope.opscount];
-        data.filePath = $scope.filePath;
-        data.engine=$scope.ocrengines[$scope.ocrenginecount];
-
-        $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
-            .success(function (data, status, headers, config) {
-
-
-            $scope.results.push(data);
-
-            console.log(JSON.stringify($scope.results));
-
-           $scope.getStrings();
-
-
-        })
-            .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-            callback($scope.ResponseDetails,"NotDone");
-        });
-    }
 
     $scope.sendRetry = function(operation){
 
@@ -182,6 +128,18 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     }
 
 
+    $scope.showTransliteration = function(index){
+
+        $mdDialog.show(
+            $mdDialog.alert()
+            .title(index)
+            .textContent(index)
+            .ariaLabel('Secondary click demo')
+            .ok('Neat!')
+
+        );
+
+    };
 
 
     $scope.onPhotoSuccess = function(croppedURI){
@@ -194,6 +152,60 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     }
 
 
+    $scope.getStrings = function(){
+        $scope.opscount++;
+
+        if($scope.ocrenginecount == -1 || $scope.opscount >= $scope.ocrops.length){
+            $scope.ocrenginecount++;
+            $scope.opscount = 0;
+        }
+
+
+        if($scope.ocrenginecount >= $scope.ocrengines.length)
+            return;
+
+
+
+
+
+        if(!$scope.filePath)
+            return;
+        $scope.showPic = true;
+        $scope.fetch=true;
+        $scope.recognizedText ="";
+        $scope.englishText="";
+        $scope.transliteratedText="";
+        var config ={};
+        var data = {};
+        $cookies.put("sourcelang", $scope.sourcelang); 
+        $cookies.put("targetlang", $scope.targetlang);
+        $cookies.put("serveraddress",$scope.serveraddress);
+        data.sourcelang = $scope.codes[$scope.sourcelang];
+        data.tolang=$scope.codes[$scope.targetlang];   
+        data.operation =$scope.ocrops[$scope.opscount];
+        data.filePath = $scope.filePath;
+        data.engine=$scope.ocrengines[$scope.ocrenginecount];
+
+        $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
+            .success(function (data, status, headers, config) {
+
+            if(data.recognizedText)
+                $scope.results.push(data);
+
+            console.log(JSON.stringify($scope.results));
+
+            $scope.getStrings();
+
+
+        })
+            .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+            callback($scope.ResponseDetails,"NotDone");
+        });
+    }
 
 
     $scope.updateResult = function(response){
@@ -210,7 +222,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
             $scope.opscount = -1;
 
             $scope.getStrings();
-           
+
 
         });
 
