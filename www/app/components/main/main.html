@@ -27,6 +27,9 @@
             </md-input-container>
 
 
+            <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Home" ng-click="setDefault()">
+                <md-icon>home</md-icon>
+            </md-button>
 
 
 
@@ -67,8 +70,12 @@
     <md-content flex="10">
 
         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-            <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.takePicture()">
+            <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="main.takePicture(1)">
                 <md-icon>camera</md-icon>
+            </md-button>
+            
+            <md-button class="md-icon-button md-raised md-primary md-fab" aria-label="Gallery" ng-click="main.takePicture(2)">
+                <md-icon>folder</md-icon>
             </md-button>
 
             <md-button id="retryButton" class="md-icon-button md-raised md-primary md-fab" aria-label="Camera" ng-click="sendRetry('normal')">

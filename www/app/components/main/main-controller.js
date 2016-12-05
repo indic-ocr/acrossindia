@@ -74,17 +74,27 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         });
     };
 
-    this.takePicture = function(){
-        navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
-            quality:100, 
-            destinationType: navigator.camera.DestinationType.FILE_URI
+    this.takePicture = function(photoType){
+        if(photoType == 1){
+            navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
+                quality:100, 
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                saveToPhotoAlbum: true
 
-
-
-        });
+            });
+        }else{
+            navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
+                quality:100, 
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+            });
+        }
     }
 
 
+    $scope.setDefault=function(){
+        $scope.serveraddress = "35.164.84.230:8081";
+    }
 
 
     $scope.sendRetry = function(operation){
@@ -138,7 +148,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     $scope.onPhotoSuccess = function(croppedURI){
 
-        plugins.crop($scope.cropSuccess, function fail(message){ alert(message);}, croppedURI);
+        plugins.crop($scope.cropSuccess, function fail(message){ alert("Crop cancelled");}, croppedURI);
     }
     this.onFail = function(message){
 
@@ -220,6 +230,14 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     }
 
     $scope.cropSuccess= function(croppedURI){
+
+
+        window.resolveLocalFileSystemURL(croppedURI, function (fileEntry) {
+            window.cordova.plugins.imagesaver.saveImageToGallery(fileEntry.toURL(), 
+
+                                                                 function(){console.log("Cropped Image saved");},
+                                                                 function(error){console.log("Cropped Image could not be saved " + error);});
+        }, function (fileName, e) {console.log("Something errored!!")});
 
         $scope.$apply(function(){
             $scope.cropImage= croppedURI;
