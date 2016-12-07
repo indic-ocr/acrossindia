@@ -23,6 +23,6 @@ angular.module("ngapp", [ "ui.router", "ngMaterial", "ngCordova", "ngStorage" ,"
   $mdGestureProvider.skipClickHijack();
 
   $mdThemingProvider.theme('default')
-    .primaryPalette('red')
-    .accentPalette('blue');
+    .primaryPalette('blue')
+    .accentPalette('red');
 });
