@@ -18,13 +18,16 @@
         },
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "io.github.rkvsraman.acrosindia"
+        },
+        "cordova-plugin-save-image": {
+            "PACKAGE_NAME": "io.github.rkvsraman.acrosindia"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "io.github.rkvsraman.acrosindia"
         }
     },
     "dependent_plugins": {
         "cordova-plugin-compat": {
-            "PACKAGE_NAME": "io.github.rkvsraman.acrosindia"
-        },
-        "cordova-plugin-file": {
             "PACKAGE_NAME": "io.github.rkvsraman.acrosindia"
         }
     }

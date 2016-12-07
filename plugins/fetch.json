@@ -44,7 +44,15 @@
             "type": "registry",
             "id": "cordova-plugin-file"
         },
-        "is_top_level": false,
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-save-image": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-save-image"
+        },
+        "is_top_level": true,
         "variables": {}
     }
 }

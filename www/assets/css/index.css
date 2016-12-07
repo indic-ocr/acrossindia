@@ -3,12 +3,69 @@
     text-decoration: none;
 }
 
+
+@font-face {
+    font-family: "Noto Sans Devanagari";
+    src: url("./fonts/NotoSansDevanagari-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Tamil";
+    src: url("./fonts/NotoSansTamil-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+
+@font-face {
+    font-family: "Noto Sans Kannada";
+    src: url("./fonts/NotoSansKannada-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Telugu";
+    src: url("./fonts/NotoSansTelugu-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Gujarati";
+    src: url("./fonts/NotoSansGujarati-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Gurmukhi";
+    src: url("./fonts/NotoSansGurmukhi-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Oriya";
+    src: url("./fonts/NotoSansOriya-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans Bengali";
+    src: url("./fonts/NotoSansBengali-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+@font-face {
+    font-family: "Noto Sans";
+    src: url("./fonts/NotoSans-Regular.ttf") format("opentype");   
+    /* Make sure you defined the correct path, which is related to
+    the location of your file `my_css.css` */ 
+}
+
 body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-attachment:fixed;
-    font-family:"RobotoDraft", Helvetica, Arial, sans-serif;
+    font-family: "Noto Sans Devanagari", "Noto Sans Tamil","Noto Sans Kannada","Noto Sans Telugu","Noto Sans Malayalam","Noto Sans Gujarati","Noto Sans Gurmukhi","Noto Sans Oriya","Noto Sans Bengali", "Noto Sans", sans-serif;, sans-serif;
     height:100%;
     margin:0px;
     padding:0px;
@@ -26,7 +83,7 @@ body {
     text-align:center;
     padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
     margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
-                                   /* offset horizontal: half of text area width */
+    /* offset horizontal: half of text area width */
 }
 
 /* Landscape layout (with min-width) */
@@ -35,7 +92,7 @@ body {
         background-position:left center;
         padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
         margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
-                                      /* offset horizontal: half of image width and text area width */
+        /* offset horizontal: half of image width and text area width */
     }
 }
 

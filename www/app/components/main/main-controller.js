@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $http,$scope, $mdSidenav, $mdComponentRegistry,$cookies){
+angular.module("ngapp").controller("MainController", function(shared,$mdDialog, $state, $http,$scope, $mdSidenav, $mdComponentRegistry,$cookies, $sce){
 
     var ctrl = this;
 
@@ -11,10 +11,17 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
     this.title = $state.current.title;
 
     this.languages= ["Bengali","English","Gujarati","Hindi","Kannada","Malayalam","Oriya","Punjabi","Tamil","Telugu"];
-    
+
     this.engines =["tesseract","scribo"];
-    
+
     $scope.targetengine = "tesseract";
+
+    $scope.results = [];
+
+    $scope.ocrengines = ["tesseract","scribo"];
+    $scope.ocrops = ["normal","invert","binarize"];
+    $scope.ocrenginecount = -1;
+    $scope.opscount = -1;
 
     if(!$cookies.get("sourcelang"))
         $scope.sourcelang= "English";
@@ -27,7 +34,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
 
     if(!$cookies.get("serveraddress"))
-        $scope.serveraddress = "192.168.1.6:8081";
+        $scope.serveraddress = "35.164.84.230:8081";
     else
         $scope.serveraddress =$cookies.get("serveraddress");
     $scope.showPic = false;
@@ -47,6 +54,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
     this.cropImage= "";
     $scope.fetch = false;
+    $scope.imageType = "camera";
 
     $scope.filePath= "";
 
@@ -67,18 +75,104 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         });
     };
 
-    this.takePicture = function(){
-        navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
-            quality:100, 
-            destinationType: navigator.camera.DestinationType.FILE_URI
+    this.takePicture = function(photoType){
+        if(photoType == 1){
+            $scope.imageType = "camera";
+            navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
+                quality:100, 
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                saveToPhotoAlbum: true
 
-
-
-        });
+            });
+        }else{
+            $scope.imageType = "gallery";
+            navigator.camera.getPicture($scope.onPhotoSuccess, this.onFail, {
+                quality:100, 
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+            });
+        }
     }
+
+
+    $scope.setDefault=function(){
+        $scope.serveraddress = "35.164.84.230:8081";
+    }
+
 
     $scope.sendRetry = function(operation){
 
+
+        $scope.showPic = true;
+        $scope.fetch=true;
+        $scope.recognizedText ="";
+        $scope.englishText="";
+        $scope.transliteratedText="";
+        $cookies.put("sourcelang", $scope.sourcelang); 
+        $cookies.put("targetlang", $scope.targetlang);
+        $cookies.put("serveraddress",$scope.serveraddress);
+        var options = new FileUploadOptions();
+        options.fileKey = "myfile";
+        options.fileName = "image.jpg";
+        options.mimeType = "image/jpeg";
+
+        var params = new Object();
+        params.sourcelang = $scope.codes[$scope.sourcelang];
+        params.tolang=$scope.codes[$scope.targetlang];       
+
+        options.params = params;
+        options.chunkedMode = false;
+
+        var ft = new FileTransfer();
+
+        ft.upload( $scope.cropImage, "http://"+$scope.serveraddress+"/india", function(result){
+            $scope.updateResult(result.response);
+        }, function(error){
+            alert("Could not contact the service!!");
+            console.log(JSON.stringify(error));
+            $scope.fetch = false;
+        }, options);
+    }
+
+
+    $scope.showTransliteration = function(index){
+
+        $mdDialog.show(
+            $mdDialog.alert()
+            .title($scope.results[index].recognizedText)
+            .htmlContent($sce.trustAsHtml( "<p class=\"md-headline\">"+ $scope.results[index].englishTransliteration + "</p> <p class=\"md-headline\">" + $scope.results[index].tranliteratedTo +"</p>"))
+            .ariaLabel($scope.results[index].recognizedText)
+            .ok('OK')
+
+        );
+
+    };
+
+
+    $scope.onPhotoSuccess = function(croppedURI){
+
+
+        plugins.crop($scope.cropSuccess, function fail(message){ alert("Crop cancelled");}, croppedURI);
+
+    }
+    this.onFail = function(message){
+
+
+    }
+
+
+    $scope.getStrings = function(){
+        $scope.opscount++;
+
+        if($scope.ocrenginecount == -1 || $scope.opscount >= $scope.ocrops.length){
+            $scope.ocrenginecount++;
+            $scope.opscount = 0;
+        }
+        if($scope.ocrenginecount >= $scope.ocrengines.length)
+        {
+            $scope.fetch=false;
+            return;
+        }
         if(!$scope.filePath)
             return;
         $scope.showPic = true;
@@ -93,19 +187,19 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         $cookies.put("serveraddress",$scope.serveraddress);
         data.sourcelang = $scope.codes[$scope.sourcelang];
         data.tolang=$scope.codes[$scope.targetlang];   
-        data.operation = operation;
+        data.operation =$scope.ocrops[$scope.opscount];
         data.filePath = $scope.filePath;
-        data.engine=$scope.targetengine;
+        data.engine=$scope.ocrengines[$scope.ocrenginecount];
 
         $http.post("http://"+$scope.serveraddress+"/indiastring", data, config)
             .success(function (data, status, headers, config) {
 
-            console.log(JSON.stringify(data));
-            $scope.fetch=false;
+            if(data.recognizedText)
+                $scope.results.push(data);
 
-            $scope.recognizedText = data.recognizedText;
-            $scope.englishText= data.englishTransliteration;
-            $scope.transliteratedText=data.tranliteratedTo;
+            console.log(JSON.stringify($scope.results));
+
+            $scope.getStrings();
 
 
         })
@@ -114,35 +208,43 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
                 "<hr />status: " + status +
                 "<hr />headers: " + header +
                 "<hr />config: " + config;
+            callback($scope.ResponseDetails,"NotDone");
         });
     }
 
 
-
-
-    $scope.onPhotoSuccess = function(croppedURI){
-
-        plugins.crop($scope.cropSuccess, function fail(message){ alert(message);}, croppedURI);
-    }
-    this.onFail = function(message){
-
-
-    }
-
     $scope.updateResult = function(response){
         $scope.$apply(function(){
-          
+
             $scope.fetch=false;
             var response1 = JSON.parse(response)
             $scope.recognizedText = response1.recognizedText;
             $scope.englishText= response1.englishTransliteration;
             $scope.transliteratedText=response1.tranliteratedTo;
             $scope.filePath = response1.filePath;
+
+            $scope.ocrenginecount = -1;
+            $scope.opscount = -1;
+            $scope.results = [];
+
+            $scope.getStrings();
+
+
         });
+
     }
 
     $scope.cropSuccess= function(croppedURI){
 
+
+        if($scope.imageType == "camera"){
+            window.resolveLocalFileSystemURL(croppedURI, function (fileEntry) {
+                window.cordova.plugins.imagesaver.saveImageToGallery(fileEntry.toURL(), 
+
+                                                                     function(){console.log("Cropped Image saved");},
+                                                                     function(error){console.log("Cropped Image could not be saved " + error);});
+            }, function (fileName, e) {console.log("Something errored!!")});
+        }
         $scope.$apply(function(){
             $scope.cropImage= croppedURI;
             $scope.showPic = true;
@@ -175,7 +277,9 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
         ft.upload(croppedURI, "http://"+$scope.serveraddress+"/india", function(result){
             $scope.updateResult(result.response);
         }, function(error){
-            alert(JSON.stringify(error));
+            alert("Could not contact the service!!");
+            console.log(JSON.stringify(error));
+            $scope.fetch = false;
         }, options);
 
 
