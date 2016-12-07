@@ -34,7 +34,7 @@ angular.module("ngapp").controller("MainController", function(shared,$mdDialog, 
 
 
     if(!$cookies.get("serveraddress"))
-        $scope.serveraddress = "192.168.1.6:8081";
+        $scope.serveraddress = "35.164.84.230:8081";
     else
         $scope.serveraddress =$cookies.get("serveraddress");
     $scope.showPic = false;
