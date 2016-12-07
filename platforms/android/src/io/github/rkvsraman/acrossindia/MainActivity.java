@@ -17,7 +17,7 @@
        under the License.
  */
 
-package io.github.rkvsraman.acrosindia;
+package io.github.rkvsraman.acrossindia;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
